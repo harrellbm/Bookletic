@@ -8,15 +8,22 @@
   page-margin-edge: 0.25in, // Edge margin for each page
   page-border: luma(0), // Whether to draw a border around each page
   draft: false, // Whether to output draft or final layout
-  p-num-pattern: "1", // Pattern for page numbering
-  // TODO: add ability to set a shape behind page number
-  // TODO: add ability to set which pages to start and stop page numbering on 
-  p-num-placment: top, // Placement of page numbers (top or bottom)
-  p-num-align-horizontal: center, // Horizontal alignment of page numbers
-  p-num-align-vertical: horizon, // Vertical alignment of page numbers
-  p-num-size: 12pt, // Size of page numbers
-  p-num-pad-horizontal: 1pt, // Horizontal padding for page numbers
-  p-num-border: luma(0), // Border color for page numbers
+  p-num-layout: (
+      // TODO: add ability to set a shape behind page number
+      // TODO: add ability to easily pad page number left or right
+    (
+      p-num-start: 1,
+      p-num-alt-start: none,
+      p-num-pattern: "1", // Pattern for page numbering
+      p-num-placment: top, // Placement of page numbers (top or bottom)
+      p-num-align-horizontal: center, // Horizontal alignment of page numbers
+      p-num-align-vertical: horizon, // Vertical alignment of page numbers
+      p-num-pad-left: 0pt, // Extra padding added to page number
+      p-num-pad-horizontal: 1pt, // Horizontal padding for page numbers
+      p-num-size: 12pt, // Size of page numbers
+      p-num-border: luma(0), // Border color for page numbers
+    ),
+  ),
   pad-content: 5pt, // Padding around page content
   contents: (), // Content to be laid out in the booklet
 ) = {
@@ -42,30 +49,57 @@
 
   let wrapped-cont = ()  // Array to hold wrapped content
   let p-num = 1 // Initialize page number
-
   // Loop through the provided content and package for placement in the booklet
+  // We will nsert page number for each page before we reorder things
   for value in contents {
     let page
-    // Insert page number for each page before we reorder things
-    // TODO: Handle starting and stoping page numbering at specific page (to allow no numbers on cover or blank pages)
-    // Compose page number box
-    let p-num-hight = p-num-size + p-num-pad-horizontal
-    let p-num-width = page-width
-    let page-number-box = box(
-      width: p-num-width,
-      height: p-num-hight,
-      stroke: p-num-border,
-      align(p-num-align-horizontal + p-num-align-vertical, text(size: p-num-size, numbering(p-num-pattern, p-num)))
-    )
+    let p-num-placment
+    let p-num-width
+    let p-num-height   
+    let p-num-value
+    let page-number-box
+    // Compose a page number box for this page if it falls within a defined layout
+    for layout in p-num-layout {
+      // Check if this is the right layout or not
+      if layout.at("p-num-start") <= p-num {
+        // If it is check whether we need to build a box or not
+        if layout.at("p-num-pattern") == none {
+          page-number-box = none
+          continue
+        }
+        
+        // Substitute alternative starting number if specified for this page number layout
+        if layout.at("p-num-alt-start") != none {
+          p-num-value = (p-num - layout.at("p-num-start")) + layout.at("p-num-alt-start")
+        } else {
+          p-num-value = p-num
+        }
+        
+        // Build dimensions of box from layout definition
+        p-num-height = layout.at("p-num-size") + layout.at("p-num-pad-horizontal")
+        p-num-width = page-width
+        // Hold on to placment for use when building pages
+        p-num-placment = layout.at("p-num-placment")
+        // Compose page number box
+        page-number-box = box(
+          width: p-num-width,
+          height: p-num-height,
+          stroke: layout.at("p-num-border"),
+          align(layout.at("p-num-align-horizontal") + layout.at("p-num-align-vertical"), pad(left: layout.at("p-num-pad-left"), text(size: layout.at("p-num-size"), numbering(layout.at("p-num-pattern"), p-num-value))))
+        )
+      }
+    }
 
-    // Compose the page based on page number placement
-    if p-num-placment == top {
+    // Compose the page based on page number box placement
+    if page-number-box == none {
+      page = pad(pad-content, value) // Page without any page numbers
+    } else if p-num-placment == top {
       page = stack(page-number-box, pad(pad-content, value)) // Page number on top
     } else {
       page = pad(pad-content, value) + align(bottom, page-number-box) // Page number at bottom
     }
 
-    // Wrap the page content to the specified page size
+    // Wrap the finished page content to the specified page size
     wrapped-cont.push(
       block(
         width: page-width,
@@ -81,6 +115,11 @@
   let reordered-pages = () // Prepare to collect reordered pages
   let num-pages = wrapped-cont.len() // Total number of pages
   let half-num = int(num-pages / 2) // Number of pages in each half
+  
+  // Round half-num up to account for odd page numbers
+  if calc.odd(num-pages) {
+    half-num += 1
+  }
 
   // Split pages into front and back halves for reordering
   let front-half = wrapped-cont.slice(0, half-num)
@@ -89,11 +128,20 @@
   // Reorder pages into booklet signature
   for num in range(half-num) {
     // If total number of pages is odd, leave back cover blank
-    // else use last even page as back cover
-    if calc.odd(num-pages) {
-      // TODO: handle odd number of pages
+    // otherwise proceed with reordering pages normally
+    if  calc.odd(num-pages) {
+      if num == 0 {
+        reordered-pages.push([])
+        reordered-pages.push(front-half.at(num))
+      } else if calc.even(num) {
+        reordered-pages.push(back-half.at(num - 1))
+        reordered-pages.push(front-half.at(num))
+      } else {
+        reordered-pages.push(front-half.at(num))
+        reordered-pages.push(back-half.at(num - 1))
+      }
     } else {
-      // Alternate page arrangement for booklet signature
+      // Alternate page arrangement for even paged booklet signature
       if calc.even(num) {
         reordered-pages.push(back-half.at(num))
         reordered-pages.push(front-half.at(num))
