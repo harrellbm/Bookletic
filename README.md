@@ -1,7 +1,7 @@
   # Bookletic :book:
 Create beautiful booklets with ease.
 
-The current version of this library (0.1.0) contains a single function to take in an array of content blocks and order them into a ready to print booklet, bulletin, etc. No need to fight with printer settings or document converters. 
+The current version of this library (0.2.0) contains a single function to take in an array of content blocks and order them into a ready to print booklet, bulletin, etc. No need to fight with printer settings or document converters. 
 
 ### Example Output
 
@@ -69,13 +69,19 @@ You can customize the layout by passing different values for the various paramet
   page_margin_edge: 0.5in,
   page_border: none,
   draft: true,
-  pNum_pattern: "-1-",
-  pNum_placment: bottom,
-  pNum_align_horizontal: right,
-  pNum_align_vertical: bottom,
-  pNum_size: 10pt,
-  pNum_pad_horizontal: 2pt,
-  pNum_border: rgb("#ff4136"),
+  p-num-layout: (
+      p-num-start: 1,
+      p-num-alt-start: none,
+      p-num-pattern: "~ 1 ~", 
+      p-num-placment: bottom,
+      p-num-align-horizontal: right,
+      p-num-align-vertical: horizon,
+      p-num-pad-left: -5pt,
+      p-num-pad-horizontal: 0pt,
+      p-num-size: 16pt,
+      p-num-border: rgb("#ff4136"),
+    ),
+  ),
   pad_content: 10pt,
   contents: [
     ["Page 1 content"],
@@ -92,8 +98,16 @@ This will create an unordered draft signature layout with US Legal paper size, l
 
 - The `sig` function is currently hardcoded to only handle two-page single-fold signatures. Other more complicated signatures may be supported in the future.
 - Paper size is also currently hardcoded to only handle US Letter and US Legal.
-- The function does not handle odd numbers of pages correctly yet. There is a TODO comment to implement this functionality.
 - The `booklet` function is a placeholder for automatically break a single content block into pages dynamically. It is not implemented yet but will be added in coming versions.
 
-### Collaboration
-I would love to see this package eventually turn into a community effort. So any interest in collaboration is very welcome! However, at this point bookletic is still in its first iteration and can no doubt use a lot more field testing and improvements. If there is enough interest for collaboration, I will gladly create a public repository for bookletic. In the mean time, if you are interested you can ping me on the typst discord server with the username: `harrellbm`
+## Collaboration
+I would love to see this package eventually turn into a community effort. So any interest in collaboration is very welcome! You can find the github repository for this library here: [Bookletic Repo](https://github.com/harrellbm/Bookletic). Feel free to file an issue, pull request, or start a discussion. 
+
+## Changlog
+#### 0.2.0
+- Handle odd number of pages by inserting a blank back cover
+- Implements page number layouts to allow defining different page numbers for different page ranges.
+- Add various other page number options
+
+#### 0.1.0
+Initial Commit
