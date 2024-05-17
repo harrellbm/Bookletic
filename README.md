@@ -22,17 +22,21 @@ The `sig` function is used to create a signature (booklet) layout from provided 
 - `signature_paper`: The paper size for the booklet. Currently supports `"us-letter"` and `"us-legal"`.
 - `page_margin_top`: The top margin for each page in the booklet.
 - `page_margin_bottom`: The bottom margin for each page in the booklet.
-- `page_margin_binding`: The binding margin for each page in the booklet.
+- `page_margin_binding`: The binding margin for each page in the booklet (space between pages).
 - `page_margin_edge`: The edge margin for each page in the booklet.
 - `page_border`: Takes a color space value to draw a border around each page. If set to none no border will be drawn.
 - `draft`: A boolean value indicating whether to output an unordered draft or final layout.
-- `pNum_pattern`: The pattern for page numbering (e.g., `"1"`, `"01"`, `"a"`, `"A"`).
-- `pNum_placment`: The placement of page numbers on each page. Can be `top` or `bottom`.
-- `pNum_align_horizontal`: The horizontal alignment of page numbers. Can be `left`, `center`, or `right`.
-- `pNum_align_vertical`: The vertical alignment of page numbers. Can be `top`, `horizon`, or `bottom`.
-- `pNum_size`: The size of the page numbers.
-- `pNum_pad_horizontal`: The horizontal padding for the page numbers.
-- `pNum_border`: The border color for the page numbers. If set to none no border will be drawn.
+- `p-num-layout`: A configuration for page numbering styles, allowing multiple layouts that apply to specified page ranges. Each layout can be provided as a dictonary specifying the following options:
+    - `p-num-start`: Starting page number for this layout
+    - `p-num-alt-start`: Alternative starting page number (e.g., for chapters)
+    - `p-num-pattern`: Pattern for page numbering (e.g., `"1"`, `"i"`, `"a"`, `"A"`)
+    - `p-num-placment`: Placement of page numbers (`top` or `bottom`)
+    - `p-num-align-horizontal`: Horizontal alignment of page numbers (`left`, `center`, or `right`)
+    - `p-num-align-vertical`: Vertical alignment of page numbers (`top`, `horizon`, or `bottom`)
+    - `p-num-pad-left`: Extra padding added to the left of the page number
+    - `p-num-pad-horizontal`: Horizontal padding for page numbers
+    - `p-num-size`: Size of page numbers
+    - `p-num-border`: The border color for the page numbers. If set to none no border will be drawn.
 - `pad_content`: The padding around the page content.
 - `contents`: The content to be laid out in the booklet. This should be an array of blocks.
 

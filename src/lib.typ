@@ -1,31 +1,32 @@
-// This function creates a signature (booklet) layout
-// It takes various parameters to configure the layout
+// This function creates a signature (booklet) layout for printing.
+// It takes various parameters to configure the layout, such as paper size,
+// margins, page numbering styles, content padding, and the content to be laid out.
 #let sig(
-  signature-paper: "us-letter", // Paper size for the booklet
+  signature-paper: "us-letter", // Paper size for the booklet (e.g., "us-letter", "us-legal")
   page-margin-top: 0.25in, // Top margin for each page
   page-margin-bottom: 0.25in, // Bottom margin for each page
-  page-margin-binding: 0.25in, // Binding margin for each page
+  page-margin-binding: 0.25in, // Binding margin for each page (space between pages)
   page-margin-edge: 0.25in, // Edge margin for each page
-  page-border: luma(0), // Whether to draw a border around each page
+  page-border: luma(0), // Color for the border around each page (set to none for no border)
   draft: false, // Whether to output draft or final layout
   p-num-layout: (
       // TODO: add ability to set a shape behind page number
       // TODO: add ability to easily pad page number left or right
     (
-      p-num-start: 1,
-      p-num-alt-start: none,
-      p-num-pattern: "1", // Pattern for page numbering
+      p-num-start: 1, // Starting page number
+      p-num-alt-start: none, // Alternative starting page number (e.g., for chapters)
+      p-num-pattern: "1", // Pattern for page numbering (e.g., "1", "i", "a", "A")
       p-num-placment: top, // Placement of page numbers (top or bottom)
       p-num-align-horizontal: center, // Horizontal alignment of page numbers
       p-num-align-vertical: horizon, // Vertical alignment of page numbers
-      p-num-pad-left: 0pt, // Extra padding added to page number
+      p-num-pad-left: 0pt, // Extra padding added to the left of the page number
       p-num-pad-horizontal: 1pt, // Horizontal padding for page numbers
       p-num-size: 12pt, // Size of page numbers
       p-num-border: luma(0), // Border color for page numbers
     ),
   ),
   pad-content: 5pt, // Padding around page content
-  contents: (), // Content to be laid out in the booklet
+  contents: (), // Content to be laid out in the booklet (an array of content blocks)
 ) = {
   // set printer page size (typst's page) and a booklet page size (pages in the booklet)
   set page(signature-paper, margin: (
