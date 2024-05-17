@@ -70,6 +70,7 @@ You can customize the layout by passing different values for the various paramet
   page_border: none,
   draft: true,
   p-num-layout: (
+    (
       p-num-start: 1,
       p-num-alt-start: none,
       p-num-pattern: "~ 1 ~", 
@@ -83,12 +84,12 @@ You can customize the layout by passing different values for the various paramet
     ),
   ),
   pad_content: 10pt,
-  contents: [
+  contents: (
     ["Page 1 content"],
     ["Page 2 content"],
     ["Page 3 content"],
     ["Page 4 content"],
-  ],
+  ),
 )
 ```
 
