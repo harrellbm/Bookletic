@@ -1,55 +1,51 @@
-// This function creates a signature (booklet) layout for printing.
-// It takes various parameters to configure the layout, such as paper size,
-// margins, page numbering styles, content padding, and the content to be laid out.
-#let sig(
-  signature-paper: "us-letter", // Paper size for the booklet (e.g., "us-letter", "us-legal")
-  page-margin-top: 0.25in, // Top margin for each page
-  page-margin-bottom: 0.25in, // Bottom margin for each page
-  page-margin-binding: 0.25in, // Binding margin for each page (space between pages)
-  page-margin-edge: 0.25in, // Edge margin for each page
-  page-border: luma(0), // Color for the border around each page (set to none for no border)
-  draft: false, // Whether to output draft or final layout
-  p-num-layout: (
-      // TODO: add ability to set a shape behind page number
-      // TODO: add ability to easily pad page number left or right
-    (
+
+// Page number layout config.
+#let num-layout(
       p-num-start: 1, // Starting page number
       p-num-alt-start: none, // Alternative starting page number (e.g., for chapters)
       p-num-pattern: "1", // Pattern for page numbering (e.g., "1", "i", "a", "A")
-      p-num-placment: top, // Placement of page numbers (top or bottom)
+      p-num-placement: bottom, // Placement of page numbers (top or bottom)
       p-num-align-horizontal: center, // Horizontal alignment of page numbers
       p-num-align-vertical: horizon, // Vertical alignment of page numbers
       p-num-pad-left: 0pt, // Extra padding added to the left of the page number
       p-num-pad-horizontal: 1pt, // Horizontal padding for page numbers
       p-num-size: 12pt, // Size of page numbers
-      p-num-border: luma(0), // Border color for page numbers
-    ),
-  ),
+      p-num-border: none, // Border color for page numbers. eg: luma(0)
+      p-num-halign-alternate: true, // Alternate horizontal alignment between left and right pages.
+    ) = {
+      // TODO: add ability to set a shape behind page number
+      // TODO: add ability to easily pad page number left or right
+  let layout = (
+      p-num-start: p-num-start,
+      p-num-alt-start: p-num-alt-start,
+      p-num-pattern: p-num-pattern,
+      p-num-placement: p-num-placement,
+      p-num-align-horizontal: p-num-align-horizontal,
+      p-num-align-vertical: p-num-align-vertical,
+      p-num-pad-left: p-num-pad-left,
+      p-num-pad-horizontal: p-num-pad-horizontal,
+      p-num-size: p-num-size,
+      p-num-border: p-num-border,
+      p-num-halign-alternate: p-num-halign-alternate,
+    )
+  return layout
+}
+
+// This function creates a signature (booklet) layout for printing.
+// It takes various parameters to configure the layout, such as
+// margins, page numbering styles, content padding, and the content to be laid out.
+#let sig(
+  page-margin-binding: 0in, // Binding margin for each page (space between pages)
+  page-margin-edge: 0in, // Edge margin for each page
+  page-border: none, // Color for the border around each page (set to none for no border)
+  draft: false, // Whether to output draft or final layout
+  p-num-layout: (), // The layout of the page number
   pad-content: 5pt, // Padding around page content
   contents: (), // Content to be laid out in the booklet (an array of content blocks)
 ) = {
-  // set printer page size (typst's page) and a booklet page size (pages in the booklet)
-  set page(signature-paper, margin: (
-    top: page-margin-top,
-    bottom: page-margin-bottom,
-    left: page-margin-edge,
-    right: 6in
-  ), flipped: true)
-
-  // Note: This is hardcoded to two page single fold signatures.
-  // Current handled pages sizes are Us-Letter and Us-Legal.
-  let page-height = (8.5in - page-margin-top) - page-margin-bottom;
-  let page-width
-  if signature-paper == "us-legal" {
-    // Calculate page width for US Legal paper size
-    page-width = ((14in - (page-margin-edge * 2)) - page-margin-binding) / 2;
-  } else {
-    // Calculate page width for US Letter paper size
-    page-width = ((11in - (page-margin-edge * 2)) - page-margin-binding) / 2;
-  }
-
   let wrapped-cont = ()  // Array to hold wrapped content
   let p-num = 1 // Initialize page number
+  
   // Loop through the provided content and package for placement in the booklet
   // We will nsert page number for each page before we reorder things
   for value in contents {
@@ -78,12 +74,11 @@
         
         // Build dimensions of box from layout definition
         p-num-height = layout.at("p-num-size") + layout.at("p-num-pad-horizontal")
-        p-num-width = page-width
         // Hold on to placment for use when building pages
         p-num-placment = layout.at("p-num-placment")
         // Compose page number box
         page-number-box = box(
-          width: p-num-width,
+          width: 1fr,
           height: p-num-height,
           stroke: layout.at("p-num-border"),
           align(layout.at("p-num-align-horizontal") + layout.at("p-num-align-vertical"), pad(left: layout.at("p-num-pad-left"), text(size: layout.at("p-num-size"), numbering(layout.at("p-num-pattern"), p-num-value))))
@@ -103,8 +98,8 @@
     // Wrap the finished page content to the specified page size
     wrapped-cont.push(
       block(
-        width: page-width,
-        height: page-height,
+        width: 100%,
+        height: 100%,
         spacing: 0em,
         page
       )
@@ -155,9 +150,8 @@
 
   // Create grid to place booklet pages
   let sig-grid = grid.with(
-    columns: 2 * (page-width,),
-    rows: page-height,
-    gutter: page-margin-binding,
+    columns: (1fr, 1fr),
+    column-gutter: page-margin-binding * 2,
   )
 
   // Draw border if not set to none
