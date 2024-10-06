@@ -126,36 +126,39 @@
   if calc.odd(num-pages) {
     half-num += 1
   }
+  // We need a multiple of 4 half-pages to prevent the blank pages from being in the middle
+  // This is because there are 4 half-pages per sheet.
+  if calc.odd(half-num) {
+    half-num += 1
+  }
 
-  // Split pages into front and back halves for reordering
-  let front-half = wrapped-cont.slice(0, half-num)
-  let back-half = wrapped-cont.slice(half-num).rev()
+  // To reorder the pages we put a front page side by side with a back page.
+  // And iterate until we reach the middle of the booklet.
+  // We alternate between left an right.
+  // The index of front pages will increase, while the index of back pages will decrease.
+  // For example, 8 pages will give 2 sheets.
+  // Sheet 1:
+  // 8 | 1
+  // 2 | 7
+  // Sheet 2:
+  // 6 | 3
+  // 4 | 5
+  let front-index = 0;
+  let back-index = half-num * 2 - 1;
 
   // Reorder pages into booklet signature
   for num in range(half-num) {
-    // If total number of pages is odd, leave back cover blank
-    // otherwise proceed with reordering pages normally
-    if  calc.odd(num-pages) {
-      if num == 0 {
-        reordered-pages.push([])
-        reordered-pages.push(front-half.at(num))
-      } else if calc.even(num) {
-        reordered-pages.push(back-half.at(num - 1))
-        reordered-pages.push(front-half.at(num))
-      } else {
-        reordered-pages.push(front-half.at(num))
-        reordered-pages.push(back-half.at(num - 1))
-      }
-    } else {
-      // Alternate page arrangement for even paged booklet signature
-      if calc.even(num) {
-        reordered-pages.push(back-half.at(num))
-        reordered-pages.push(front-half.at(num))
-      } else {
-        reordered-pages.push(front-half.at(num))
-        reordered-pages.push(back-half.at(num))
-      }
+    let front-content = wrapped-cont.at(front-index);
+    let back-content = if back-index < num-pages { wrapped-cont.at(back-index) } else { block() };
+    // even pages indices => BACK  | FRONT
+    //  odd pages indices => FRONT | BACK
+    if calc.even(num) {
+      (front-content, back-content) = (back-content, front-content)
     }
+    reordered-pages.push(front-content)
+    reordered-pages.push(back-content)
+    front-index += 1
+    back-index -= 1
   }
 
   // Create grid to place booklet pages
