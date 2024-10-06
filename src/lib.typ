@@ -50,9 +50,8 @@
   // We will nsert page number for each page before we reorder things
   for value in contents {
     let page
-    let p-num-placment
-    let p-num-width
-    let p-num-height   
+    let p-num-placement
+    let p-num-height
     let p-num-value
     let page-number-box
     // Compose a page number box for this page if it falls within a defined layout
@@ -75,13 +74,23 @@
         // Build dimensions of box from layout definition
         p-num-height = layout.at("p-num-size") + layout.at("p-num-pad-horizontal")
         // Hold on to placment for use when building pages
-        p-num-placment = layout.at("p-num-placment")
+        p-num-placement = layout.at("p-num-placement")
+        let align-h = layout.at("p-num-align-horizontal")
+        if calc.even(p-num) and layout.at("p-num-halign-alternate") {
+          if (align-h == left) {
+           align-h = right
+          } else if (align-h == right) {
+           align-h = left
+          }
+        }
         // Compose page number box
         page-number-box = box(
           width: 1fr,
           height: p-num-height,
           stroke: layout.at("p-num-border"),
-          align(layout.at("p-num-align-horizontal") + layout.at("p-num-align-vertical"), pad(left: layout.at("p-num-pad-left"), text(size: layout.at("p-num-size"), numbering(layout.at("p-num-pattern"), p-num-value))))
+          align(align-h + layout.at("p-num-align-vertical"),
+                pad(left: layout.at("p-num-pad-left"), text(size: layout.at("p-num-size"),
+                numbering(layout.at("p-num-pattern"), p-num-value))))
         )
       }
     }
@@ -89,10 +98,11 @@
     // Compose the page based on page number box placement
     if page-number-box == none {
       page = pad(pad-content, value) // Page without any page numbers
-    } else if p-num-placment == top {
-      page = stack(page-number-box, pad(pad-content, value)) // Page number on top
     } else {
-      page = pad(pad-content, value) + align(bottom, page-number-box) // Page number at bottom
+      page = {
+        pad(pad-content, value)
+        place(p-num-placement, page-number-box)
+      }
     }
 
     // Wrap the finished page content to the specified page size
