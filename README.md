@@ -99,9 +99,9 @@ I would love to see this package eventually turn into a community effort. So any
 
 ## Changlog
 #### 0.3.0
-- Remove internal dependency on native page function. This allows the user to set the page function separatley with full control over paper type, outer margins and everything else defined by the native page function.
+- Remove internal dependency on native page function. This allows the user to set the page function separately with full control over paper type, outer margins and everything else defined by the native page function.
 - Add p-num-halign-alternate to page number layout allowing setting page numbers to alternate on facing pages making it possible to place page numbers along the outside or inside edges of facing pages.
-- Internal improvments for ordering algorythm algorithm. 
+- Internal improvements for ordering algorithm. 
   
 #### 0.2.0
 - Handle odd number of pages by inserting a blank back cover
