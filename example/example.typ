@@ -1,5 +1,6 @@
-//#import "@preview/bookletic:0.2.0": sig 
-#import "..\src\lib.typ": sig
+#import "@preview/bookletic:0.3.0": sig // To use through preview
+//#import "..\src\lib.typ": sig // To use on a local clone of the library
+//#import "bookletic.typ": * // To use on a clone to the Typst app
 #set document(author: "My Name", title: "Bookletic Example")
 
 //Barebones example
@@ -48,6 +49,7 @@
 // are placed into the booklet positions.
 // the content is wrapped before movement so that
 // padding and alignment are respected.
+#set page(flipped: true, paper: "us-letter")
 #sig(
   contents: my-eight-pages // Content to be laid out in the booklet
 )
@@ -104,21 +106,22 @@
   ],
 )
 
+// Note: You can use the regular page function to set the paper size, and outside margins
+#set page(flipped: true, paper: "us-legal", margin: (top: 0.5in, bottom: 0.5in, left: 0.5in, right: 0.5in))
+
+// Use bookletic's sig function to set booklet specific settings
 #sig(
-  signature-paper: "us-legal", // Paper size for the booklet
-  page-margin-top: 0.5in, // Top margin for each page
-  page-margin-bottom: 0.5in, // Bottom margin for each page
-  page-margin-binding: 1in, // Binding margin for each page
-  page-margin-edge: 0.5in, // Edge margin for each page
-  page-border: none, // Whether to draw a border around each page
+  page-margin-binding: 0.5in, // Binding margin for each page
+  page-border: none, // Whether to draw a border around each page eg, luma(0)
   draft: false, // Whether to output draft or final layout
   p-num-layout: ( // Refer to example below for further explination of page number usage
     (
       p-num-start: 1,
       p-num-alt-start: none,
       p-num-pattern: "~ 1 ~", 
-      p-num-placment: bottom,
-      p-num-align-horizontal: center,
+      p-num-placement: bottom,
+      p-num-align-horizontal: right,
+      p-num-halign-alternate: true,
       p-num-align-vertical: horizon,
       p-num-pad-left: 0pt,
       p-num-pad-horizontal: 0pt,
@@ -192,8 +195,11 @@
   ],
 )
 
+#set page(flipped: true, paper: "us-letter")
 #sig(
   draft:true,
+  page-border: luma(0), // Whether to draw a border around each page eg, luma(0)
+  page-margin-binding: 0.2in, // Binding margin for each page
   p-num-layout: ( // Each entry in the p-num-layout array allows defining a specific style of page numbers starting from the specified page
     ( 
       p-num-start: 1, // Beginning Page for this page number layout
@@ -203,10 +209,12 @@
       p-num-start: 2,
       p-num-alt-start: none, // Adding none here will continue numbering the pages using their physical page number 
       p-num-pattern: "I", // Pattern for page numbering
-      p-num-placment: bottom, // Placement of page numbers (top or bottom)
+      p-num-placement: bottom, // Placement of page numbers (top or bottom)
       p-num-align-horizontal: center, // Horizontal alignment of page numbers
+      p-num-halign-alternate: false,
       p-num-align-vertical: top, // Vertical alignment of page numbers
       p-num-pad-left: 90%, // Extra padding added to page number
+      //Note: Extra padding does not work when horizontal alignment is set to left or right
       p-num-pad-horizontal: 5pt, // Horizontal padding for page numbers
       p-num-size: 20pt, // Size of page numbers
       p-num-border: none, // Border color for page numbers
@@ -223,8 +231,9 @@
                     .join(".") 
                   + " " + box(inset: 3pt, text(size: 10pt, sym.gt.curly.double)), 
                   // This is how to use custom symbols around page numbers
-      p-num-placment: top, 
+      p-num-placement: top, 
       p-num-align-horizontal: center, 
+      p-num-halign-alternate: false,
       p-num-align-vertical: horizon, 
       p-num-pad-left: 0pt,
       p-num-pad-horizontal: 1pt, 
