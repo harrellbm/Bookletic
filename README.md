@@ -43,7 +43,7 @@ To use the `sig` function, first set your desired page settings using the native
 
 ```typst
 #set page(flipped: true, paper: "us-letter")
-#sig(
+#bookletic.sig(
   contents: [
     ["Page 1 content"],
     ["Page 2 content"],
@@ -59,12 +59,12 @@ You can customize the layout by passing different values for the various paramet
 
 ```typst
 #set page(flipped: true, paper: "us-legal", margin: (top: 1in, bottom: 1in, left: 1in, right: 1in))
-#sig(
+#bookletic.sig(
   page_margin_binding: 0.5in,
   page_border: none,
   draft: true,
   p-num-layout: (
-    (
+    bookletic.num-layout(
       p-num-start: 1,
       p-num-alt-start: none,
       p-num-pattern: "~ 1 ~", 
@@ -92,6 +92,7 @@ This will create an unordered draft signature layout with US Legal paper size, l
 
 ### Notes
 - The `sig` function is currently hardcoded to only handle two-page single-fold signatures. Other more complicated signatures may be supported in the future.
+- The `num-layout` function is a helper to create page number layouts with default values.
 - The `booklet` function is a placeholder for automatically breaking a single content block into pages dynamically. It is not implemented yet but will be added in coming versions.
 
 ## Collaboration
@@ -101,7 +102,8 @@ I would love to see this package eventually turn into a community effort. So any
 #### 0.3.0
 - Remove internal dependency on native page function. This allows the user to set the page function separately with full control over paper type, outer margins and everything else defined by the native page function.
 - Add p-num-halign-alternate to page number layout allowing setting page numbers to alternate on facing pages making it possible to place page numbers along the outside or inside edges of facing pages.
-- Internal improvements for ordering algorithm. 
+- Internal improvements for ordering algorithm.
+- Add `num-layout` function helper.
   
 #### 0.2.0
 - Handle odd number of pages by inserting a blank back cover
