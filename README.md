@@ -39,7 +39,7 @@ The `sig` function is used to create a signature (booklet) layout from provided 
 
 ### Usage
 
-To use the `sig` function, simply call it with the desired parameters and provide the content to be laid out in the booklet:
+To use the `sig` function, first set your desired page settings using the native page function. Then simply call the sig function with the desired parameters and provide the content to be laid out in the booklet:
 
 ```typst
 #set page(flipped: true, paper: "us-letter")
