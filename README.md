@@ -1,7 +1,7 @@
   # Bookletic :book:
 Create beautiful booklets with ease.
 
-The current version of this library (0.2.0) contains a single function to take in an array of content blocks and order them into a ready to print booklet, bulletin, etc. No need to fight with printer settings or document converters. 
+The current version of this library (0.3.0) contains a single function to take in an array of content blocks and order them into a ready to print booklet, bulletin, etc. No need to fight with printer settings or document converters. 
 
 ### Example Output
 
@@ -19,11 +19,7 @@ The `sig` function is used to create a signature (booklet) layout from provided 
 
 ### Parameters
 
-- `signature_paper`: The paper size for the booklet. Currently supports `"us-letter"` and `"us-legal"`.
-- `page_margin_top`: The top margin for each page in the booklet.
-- `page_margin_bottom`: The bottom margin for each page in the booklet.
 - `page_margin_binding`: The binding margin for each page in the booklet (space between pages).
-- `page_margin_edge`: The edge margin for each page in the booklet.
 - `page_border`: Takes a color space value to draw a border around each page. If set to none no border will be drawn.
 - `draft`: A boolean value indicating whether to output an unordered draft or final layout.
 - `p-num-layout`: A configuration for page numbering styles, allowing multiple layouts that apply to specified page ranges. Each layout can be provided as a dictonary specifying the following options:
@@ -37,6 +33,7 @@ The `sig` function is used to create a signature (booklet) layout from provided 
     - `p-num-pad-horizontal`: Horizontal padding for page numbers
     - `p-num-size`: Size of page numbers
     - `p-num-border`: The border color for the page numbers. If set to none no border will be drawn.
+    - `p-num-halign-alternate`: A boolean for whether to alternate horizontal alignment between left and right pages.
 - `pad_content`: The padding around the page content.
 - `contents`: The content to be laid out in the booklet. This should be an array of blocks.
 
@@ -45,8 +42,8 @@ The `sig` function is used to create a signature (booklet) layout from provided 
 To use the `sig` function, simply call it with the desired parameters and provide the content to be laid out in the booklet:
 
 ```typst
+#set page(flipped: true, paper: "us-letter")
 #sig(
-  signature_paper: "us-letter",
   contents: [
     ["Page 1 content"],
     ["Page 2 content"],
@@ -61,12 +58,9 @@ This will create a signature layout with the provided content, using the default
 You can customize the layout by passing different values for the various parameters. For example:
 
 ```typst
+#set page(flipped: true, paper: "us-legal", margin: (top: 1in, bottom: 1in, left: 1in, right: 1in))
 #sig(
-  signature_paper: "us-legal",
-  page_margin_top: 0.5in,
-  page_margin_bottom: 0.5in,
   page_margin_binding: 0.5in,
-  page_margin_edge: 0.5in,
   page_border: none,
   draft: true,
   p-num-layout: (
@@ -81,6 +75,7 @@ You can customize the layout by passing different values for the various paramet
       p-num-pad-horizontal: 0pt,
       p-num-size: 16pt,
       p-num-border: rgb("#ff4136"),
+      p-num-halign-alternate: false,
     ),
   ),
   pad_content: 10pt,
@@ -96,15 +91,18 @@ You can customize the layout by passing different values for the various paramet
 This will create an unordered draft signature layout with US Legal paper size, larger margins, no page borders, page numbers at the bottom right corner with a red border, and more padding around the content.
 
 ### Notes
-
 - The `sig` function is currently hardcoded to only handle two-page single-fold signatures. Other more complicated signatures may be supported in the future.
-- Paper size is also currently hardcoded to only handle US Letter and US Legal.
-- The `booklet` function is a placeholder for automatically break a single content block into pages dynamically. It is not implemented yet but will be added in coming versions.
+- The `booklet` function is a placeholder for automatically breaking a single content block into pages dynamically. It is not implemented yet but will be added in coming versions.
 
 ## Collaboration
 I would love to see this package eventually turn into a community effort. So any interest in collaboration is very welcome! You can find the github repository for this library here: [Bookletic Repo](https://github.com/harrellbm/Bookletic). Feel free to file an issue, pull request, or start a discussion. 
 
 ## Changlog
+#### 0.3.0
+- Remove internal dependency on native page function. This allows the user to set the page function separatley with full control over paper type, outer margins and everything else defined by the native page function.
+- Add p-num-halign-alternate to page number layout allowing setting page numbers to alternate on facing pages making it possible to place page numbers along the outside or inside edges of facing pages.
+- Internal improvments for ordering algorythm algorithm. 
+  
 #### 0.2.0
 - Handle odd number of pages by inserting a blank back cover
 - Implements page number layouts to allow defining different page numbers for different page ranges.
