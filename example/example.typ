@@ -1,6 +1,6 @@
-#import "@preview/bookletic:0.3.0": sig // To use through preview
-//#import "..\src\lib.typ": sig // To use on a local clone of the library
-//#import "bookletic.typ": * // To use on a clone to the Typst app
+#import "@preview/bookletic:0.3.0" // To use through preview
+//#import "..\src\lib.typ" // To use on a local clone of the library
+//#import "bookletic.typ" // To use on a clone to the Typst app
 #set document(author: "My Name", title: "Bookletic Example")
 
 //Barebones example
@@ -50,7 +50,7 @@
 // the content is wrapped before movement so that
 // padding and alignment are respected.
 #set page(flipped: true, paper: "us-letter")
-#sig(
+#bookletic.sig(
   contents: my-eight-pages // Content to be laid out in the booklet
 )
 
@@ -110,12 +110,12 @@
 #set page(flipped: true, paper: "us-legal", margin: (top: 0.5in, bottom: 0.5in, left: 0.5in, right: 0.5in))
 
 // Use bookletic's sig function to set booklet specific settings
-#sig(
+#bookletic.sig(
   page-margin-binding: 0.5in, // Binding margin for each page
   page-border: none, // Whether to draw a border around each page eg, luma(0)
   draft: false, // Whether to output draft or final layout
   p-num-layout: ( // Refer to example below for further explination of page number usage
-    (
+    bookletic.num-layout(
       p-num-start: 1,
       p-num-alt-start: none,
       p-num-pattern: "~ 1 ~", 
@@ -196,16 +196,16 @@
 )
 
 #set page(flipped: true, paper: "us-letter")
-#sig(
+#bookletic.sig(
   draft:true,
   page-border: luma(0), // Whether to draw a border around each page eg, luma(0)
   page-margin-binding: 0.2in, // Binding margin for each page
   p-num-layout: ( // Each entry in the p-num-layout array allows defining a specific style of page numbers starting from the specified page
-    ( 
+    bookletic.num-layout(
       p-num-start: 1, // Beginning Page for this page number layout
       p-num-pattern: none, // Adding none here will remove page numbers for this section
     ),
-    (
+    bookletic.num-layout(
       p-num-start: 2,
       p-num-alt-start: none, // Adding none here will continue numbering the pages using their physical page number 
       p-num-pattern: "I", // Pattern for page numbering
@@ -219,7 +219,7 @@
       p-num-size: 20pt, // Size of page numbers
       p-num-border: none, // Border color for page numbers
     ),
-    (
+    bookletic.num-layout(
       p-num-start: 3,
       p-num-alt-start: 1, // Specifing a number here will start numbering this section from that number. In this case starting from one again
       p-num-pattern: (..nums) => 
@@ -240,7 +240,7 @@
       p-num-size: 18pt, 
       p-num-border: oklab(27%, 20%, -3%, 50%), 
     ),
-    (
+    bookletic.num-layout(
       p-num-start: 8,
       p-num-pattern: none
     ),
