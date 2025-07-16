@@ -60,8 +60,8 @@ You can customize the layout by passing different values for the various paramet
 ```typst
 #set page(flipped: true, paper: "us-legal", margin: (top: 1in, bottom: 1in, left: 1in, right: 1in))
 #bookletic.sig(
-  page_margin_binding: 0.5in,
-  page_border: none,
+  page-margin-binding: 0.5in,
+  page-border: none,
   draft: true,
   p-num-layout: (
     bookletic.num-layout(
@@ -78,7 +78,7 @@ You can customize the layout by passing different values for the various paramet
       p-num-halign-alternate: false,
     ),
   ),
-  pad_content: 10pt,
+  pad-content: 10pt,
   contents: (
     ["Page 1 content"],
     ["Page 2 content"],
