@@ -91,9 +91,10 @@ You can customize the layout by passing different values for the various paramet
 This will create an unordered draft signature layout with US Legal paper size, larger margins, no page borders, page numbers at the bottom right corner with a red border, and more padding around the content.
 
 ### Notes
-- The `sig` function is currently hardcoded to only handle two-page single-fold signatures. Other more complicated signatures may be supported in the future.
+- The `sig` function is currently hardcoded to only handle two-page single-fold signatures. This means that it supports 4, 8, 12, etc. page signatures without any blank pages. If you feed it an odd number of pages, it will opt for laying out your pages in the closest size signature possible. It accomplishes this by inseting needed blank pages at the end of the signature. An example of how this works is: if you start with five pages of content the sig function will create an eight page signature (two sheets front and back) adding the three needed blank pages to the back of the signature. If you would like to shift where these blank pages are in the signature you can feed the sig function empty pages.
+- Other more complicated signatures may be supported in the future.
 - The `num-layout` function is a helper to create page number layouts with default values.
-- The `booklet` function is a placeholder for automatically breaking a single content block into pages dynamically. It is not implemented yet but will be added in coming versions.
+- The `booklet` function is a placeholder for automatically breaking a single content block into pages dynamically. It is not implemented yet due to limitations with typst. It is hoped that these limitations will be lifted in the future.
 
 ## Collaboration
 I would love to see this package eventually turn into a community effort. So any interest in collaboration is very welcome! You can find the github repository for this library here: [Bookletic Repo](https://github.com/harrellbm/Bookletic). Feel free to file an issue, pull request, or start a discussion. 
