@@ -44,12 +44,12 @@ To use the `sig` function, first set your desired page settings using the native
 ```typst
 #set page(flipped: true, paper: "us-letter")
 #bookletic.sig(
-  contents: [
+  contents: (
     ["Page 1 content"],
     ["Page 2 content"],
     ["Page 3 content"],
     ["Page 4 content"],
-  ],
+  ),
 )
 ```
 
@@ -68,7 +68,7 @@ You can customize the layout by passing different values for the various paramet
       p-num-start: 1,
       p-num-alt-start: none,
       p-num-pattern: "~ 1 ~", 
-      p-num-placment: bottom,
+      p-num-placement: bottom,
       p-num-align-horizontal: right,
       p-num-align-vertical: horizon,
       p-num-pad-left: -5pt,
