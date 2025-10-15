@@ -1,4 +1,4 @@
-  # Bookletic :book:
+# Bookletic :book:
 Create beautiful booklets with ease.
 
 The current version of this library (0.3.2) contains a single function to take in an array of content blocks and order them into a ready to print booklet, bulletin, etc. No need to fight with printer settings or document converters. 
@@ -13,7 +13,13 @@ Here is an example with some customization applied:
 
 ![Example2](example/fancy.png)
 
-You can find these examples along with a few more in an example typst file at: [example/example.typ](example/example.typ)
+## How to Import Library
+
+To use through preview: `#import "@preview/bookletic:0.3.2"` 
+
+To use on a local clone of the library: `#import "..\src\lib.typ"`
+
+To use on a clone to the Typst app: `#import "bookletic.typ"` 
 
 ## `sig` Function
 
@@ -67,19 +73,49 @@ You can customize the layout by passing different values for the various paramet
   page-margin-binding: 0.5in,
   page-border: none,
   draft: true,
-  p-num-layout: (
+  p-num-layout: ( // Each entry in the p-num-layout array allows defining a specific style of page numbers starting from the specified page
+    bookletic.num-layout( 
+      p-num-start: 1, // Beginning Page for this page number layout
+      p-num-pattern: none, // Adding none here will remove page numbers for this section
+    ),
     bookletic.num-layout(
-      p-num-start: 1,
-      p-num-alt-start: none,
-      p-num-pattern: "~ 1 ~", 
-      p-num-placement: bottom,
-      p-num-align-horizontal: right,
-      p-num-align-vertical: horizon,
-      p-num-pad-left: -5pt,
-      p-num-pad-horizontal: 0pt,
-      p-num-size: 16pt,
-      p-num-border: rgb("#ff4136"),
+      p-num-start: 2,
+      p-num-alt-start: 1, // Adding none here will continue numbering the pages using their physical page number but we want to start from one
+      p-num-pattern: "I", // Pattern for page numbering
+      p-num-placement: bottom, // Placement of page numbers (top or bottom)
+      p-num-align-horizontal: center, // Horizontal alignment of page numbers
       p-num-halign-alternate: false,
+      p-num-align-vertical: top, // Vertical alignment of page numbers
+      p-num-pad-left: 90%, // Extra padding added to page number
+      //Note: Extra padding does not work when horizontal alignment is set to left or right
+      p-num-pad-horizontal: 5pt, // Horizontal padding for page numbers
+      p-num-size: 20pt, // Size of page numbers
+      p-num-border: none, // Border color for page numbers
+    ),
+    bookletic.num-layout(
+      p-num-start: 3,
+      p-num-alt-start: 1, // Specifing a number here will start numbering this section from that number. In this case starting from one again
+      p-num-pattern: (..nums) => 
+                  box(inset: 3pt, text(size: 15pt, 
+                  sym.lt.double )) + " " 
+                  + nums
+                    .pos()
+                    .map(str)
+                    .join(".") 
+                  + " " + box(inset: 3pt, text(size: 15pt, sym.gt.double)), 
+                  // This is how to use custom symbols around page numbers
+      p-num-placement: top, 
+      p-num-align-horizontal: center, 
+      p-num-halign-alternate: false,
+      p-num-align-vertical: horizon, 
+      p-num-pad-left: 0pt,
+      p-num-pad-horizontal: 1pt, 
+      p-num-size: 18pt, 
+      p-num-border: oklab(27%, 20%, -3%, 50%), 
+    ),
+     bookletic.num-layout(
+      p-num-start: 8,
+      p-num-pattern: none
     ),
   ),
   pad-content: 10pt,
@@ -88,11 +124,15 @@ You can customize the layout by passing different values for the various paramet
     ["Page 2 content"],
     ["Page 3 content"],
     ["Page 4 content"],
+    ["Page 5 content"],
+    ["Page 6 content"],
+    ["Page 7 content"],
+    ["Page 8 content"],
   ),
 )
 ```
 
-This will create an unordered draft signature layout with US Legal paper size, larger margins, no page borders, page numbers at the bottom right corner with a red border, and more padding around the content.
+This will create an unordered draft signature layout with US Legal paper size, larger margins, no page borders, and a variety of page numbers across the pages.
 
 ### Notes
 - The `sig` function is currently hardcoded to only handle two-page single-fold signatures. This means that it supports 4, 8, 12, etc. page signatures without any blank pages. If you feed it an odd number of pages, it will opt for laying out your pages in the closest size signature possible. It accomplishes this by inserting needed blank pages at the end of the signature. An example of how this works is if you start with five pages of content the sig function will create an eight page signature (two sheets front and back) adding the three needed blank pages to the back of the signature. If you would like to shift where these blank pages are in the signature you can feed the sig function empty pages at the beginning of the contents array.
